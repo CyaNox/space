@@ -1,7 +1,7 @@
 graphics = {vector = {}, viewx = 0, viewy = 0, zoom = 1}
 
 function graphics.load()
-	graphics.vector = require "shipgraphics.all"
+	graphics.vector = require "shipgraphics/all.lua"
 	graphics.vector.beginner = {
 			{width=2, closed=true, -1, -1, 0, 2, 1, -1},
 			{width=1.5, -.5, .5, .5, .5},
@@ -86,32 +86,37 @@ function graphics.update(dt)
 end
 
 
-function graphics.drawlines(lines, x, y, s, ax, ay)
+function graphics.drawlines(lines)
 	love.graphics.setLineWidth(lines.width)
 	for i=1,#lines-3,2 do
-		love.graphics.line(lines[i]*s*ax - lines[i+1]*s*ay + x,
-		                   lines[i]*s*ay + lines[i+1]*s*ax + y,
-		                   lines[i+2]*s*ax - lines[i+3]*s*ay + x,
-		                   lines[i+2]*s*ay + lines[i+3]*s*ax + y)
+		love.graphics.line(lines[i]   - lines[i+1],
+		                   lines[i]   + lines[i+1],
+		                   lines[i+2] - lines[i+3],
+		                   lines[i+2] + lines[i+3])
 	end
-	if lines.closed then 
+	if lines.closed then
 		local i = #lines-1
-		love.graphics.line(lines[i]*s*ax - lines[i+1]*s*ay + x,
-		                   lines[i]*s*ay + lines[i+1]*s*ax + y,
-		                   lines[1]*s*ax - lines[2]*s*ay + x,
-		                   lines[1]*s*ay + lines[2]*s*ax + y)
+		love.graphics.line(lines[i] - lines[i+1],
+		                   lines[i] + lines[i+1],
+		                   lines[1] - lines[2],
+		                   lines[1] + lines[2])
 		if lines.fill then
 		end
 	end
 end
 
-local hp = .5*math.pi
+local hp = .75*math.pi
 function graphics.drawshape(shape, x, y, s, a)
 	a = a - hp
-	local ax, ay = math.cos(a), math.sin(a)
+--	local ax, ay = math.cos(a), math.sin(a)
+	love.graphics.push()
+	love.graphics.translate(x, y)
+	love.graphics.scale(s)
+	love.graphics.rotate(a)
 	for i,lines in ipairs(shape) do
-		graphics.drawlines(lines, x, y, s, ax, ay)
+		graphics.drawlines(lines)
 	end
+	love.graphics.pop()
 end
 
 local w, h = love.graphics.getWidth()/2, love.graphics.getHeight()/2
