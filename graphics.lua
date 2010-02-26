@@ -88,27 +88,25 @@ end
 
 function graphics.drawlines(lines)
 	love.graphics.setLineWidth(lines.width)
-	for i=1,#lines-3,2 do
-		love.graphics.line(lines[i]   - lines[i+1],
-		                   lines[i]   + lines[i+1],
-		                   lines[i+2] - lines[i+3],
-		                   lines[i+2] + lines[i+3])
+	if lines.color then
+		love.graphics.setColor(unpack(lines.color))
 	end
 	if lines.closed then
-		local i = #lines-1
-		love.graphics.line(lines[i] - lines[i+1],
-		                   lines[i] + lines[i+1],
-		                   lines[1] - lines[2],
-		                   lines[1] + lines[2])
 		if lines.fill then
+			love.graphics.polygon('fill', unpack(lines))
 		end
+		love.graphics.polygon('line', unpack(lines))
+	else
+		love.graphics.line(unpack(lines))
+	end
+	if lines.color then
+		love.graphics.setColor(255,255,255)
 	end
 end
 
 local hp = .75*math.pi
 function graphics.drawshape(shape, x, y, s, a)
 	a = a - hp
---	local ax, ay = math.cos(a), math.sin(a)
 	love.graphics.push()
 	love.graphics.translate(x, y)
 	love.graphics.scale(s)
