@@ -106,7 +106,7 @@ function graphics.drawlines(lines)
 	end
 end
 
-local hp = .75*math.pi
+local hp = .5*math.pi
 function graphics.drawshape(shape, x, y, s, a)
 	a = a - hp
 	love.graphics.push()
